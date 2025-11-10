@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Passify — Decentralized Event Ticketing</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/svg+xml" href="./Passifylogo.svg" />
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="brand-logo">
+        <img src="./Passifylogo.svg" alt="Passify Logo" />
+      </div>
+      <h1>Passify</h1>
+      <p>Decentralized NFT Event Ticketing with Resale & Refunds</p>
+    </div>
+
+    <div class="topbar">
+      <input id="walletDisplay" class="mono" type="text" placeholder="Not connected" disabled />
+      <button id="connectButton">🔗 Connect MetaMask</button>
+    </div>
+
+    <div id="walletStatus" class="banner" style="display:none"></div>
+    <div id="networkStatus" class="banner warn" style="display:none">
+      <span id="networkStatusText"></span>
+    </div>
+  </header>
+
+  <main>
+    <div class="tabs">
+      <button id="tabOrganizer" class="tab active">Organizer</button>
+      <button id="tabAttendee" class="tab">Attendee</button>
+    </div>
+
+    <!-- Organizer Pane -->
+    <section id="organizerPane">
+      <div class="card">
+        <h2>📅 Create Event</h2>
+        <div class="grid2">
+          <input id="evName" type="text" placeholder="Event name (e.g., GT TechFest)"/>
+          <input id="evDate" type="datetime-local" />
+          <input id="evPrice" type="number" step="0.0001" placeholder="Ticket price (ETH)"/>
+          <input id="evSupply" type="number" placeholder="Max supply"/>
+        </div>
+        <button id="btnCreateEvent">Create Event</button>
+      </div>
+
+      <div class="card">
+        <h2>🎟️ Mint / Sell Ticket</h2>
+        <div class="grid2">
+          <select id="mintEventId"><option>Connect wallet first</option></select>
+          <input id="mintTo" type="text" placeholder="Recipient (defaults to you)"/>
+        </div>
+        <p class="muted">If you are the organizer of the selected event, minting is free. Otherwise a buy occurs at the event’s price.</p>
+        <button id="btnMintTicket">Mint or Buy Ticket</button>
+      </div>
+
+      <div class="card">
+        <h2>✅ Validate Ticket</h2>
+        <div class="grid2">
+          <input id="validateTokenId" type="number" placeholder="Token ID"/>
+        </div>
+        <button id="btnValidateTicket">Validate</button>
+      </div>
+
+      <div class="card">
+        <h2>🚫 Cancel & Refund Event</h2>
+        <div class="grid2">
+          <select id="cancelRefundEventId"><option>Select event...</option></select>
+        </div>
+        <button id="btnCancelAndRefund">Cancel & Refund Event</button>
+        <p class="muted" style="margin-top: 0.5rem; font-size: 0.85rem;">
+          Cancels the event and refunds ticket holders from the contract's escrow balance.<br>
+          <strong>Note:</strong> Only tickets that were purchased (not free mints) will be refunded if escrow has sufficient balance.
+        </p>
+      </div>
+    </section>
+
+    <!-- Attendee Pane -->
+    <section id="attendeePane" class="hidden">
+      <div class="card">
+        <h2>🛒 Buy Ticket</h2>
+        <div class="grid2">
+          <select id="buyEventId"><option>Connect wallet first</option></select>
+          <input id="buyTo" type="text" placeholder="Recipient (defaults to you)"/>
+        </div>
+        <button id="btnBuyTicket">Buy</button>
+      </div>
+
+      <div class="card">
+        <h2>🔁 List Your Ticket for Resale</h2>
+        <div class="grid2">
+          <select id="listTokenId"><option>Select your ticket...</option></select>
+          <input id="listPriceEth" type="number" step="0.0001" placeholder="Price (ETH)"/>
+        </div>
+        <div class="inline">
+          <button id="btnListResale">List for Resale</button>
+          <button id="btnCancelResale">Cancel Listing</button>
+        </div>
+        <p class="muted" style="margin-top: 0.5rem; font-size: 0.85rem;" id="resaleCapInfo"></p>
+      </div>
+
+      <div class="card">
+        <h2>🧾 Buy From Resale</h2>
+        <div class="grid2">
+          <select id="buyResaleTokenId"><option>Select resale ticket...</option></select>
+        </div>
+        <button id="btnBuyResale">Buy Resale Ticket</button>
+        <p class="muted" style="margin-top: 0.5rem; font-size: 0.85rem;" id="resalePriceInfo"></p>
+      </div>
+
+      <div class="card">
+        <h2>🎟️ My Tickets</h2>
+        <button id="btnRefreshMine" class="ghost">Refresh</button>
+        <ul id="myTickets" class="list"></ul>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>📚 Events</h2>
+        <button id="btnRefreshEvents" class="ghost">Refresh</button>
+      </div>
+      <div id="eventsList" class="events"></div>
+    </section>
+  </main>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
